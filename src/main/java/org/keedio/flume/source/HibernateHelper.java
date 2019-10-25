@@ -140,7 +140,10 @@ public class HibernateHelper {
 						+ size)));
 			}else{
 				// 约束第一列的值作为增量更新的值
+				LOG.warn("上次更新最大值为：" + sqlSourceHelper.getCurrentIndex());
 				sqlSourceHelper.setCurrentIndex(rowsList.get(size-1).get(sqlSourceHelper.getIncrementColumnIndex()).toString());
+				LOG.warn("本次增量获取到的数据条数为：" + String.valueOf(size));
+				LOG.warn("当前更新最大值为：" +  String.valueOf(rowsList.get(size-1).get(sqlSourceHelper.getIncrementColumnIndex())));
 			}
 		}
 		
