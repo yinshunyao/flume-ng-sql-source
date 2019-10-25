@@ -102,9 +102,12 @@ public class HibernateHelper {
 		if (!session.isConnected()){
 			resetConnection();
 		}
-				
+
+		// 客户自定义查询场景
 		if (sqlSourceHelper.isCustomQuerySet()){
-			
+
+			// 如果需要查询最大值
+
 			query = session.createSQLQuery(sqlSourceHelper.buildQuery());
 			
 			if (sqlSourceHelper.getMaxRows() != 0){
@@ -130,8 +133,15 @@ public class HibernateHelper {
 		}
 		
 		if (!rowsList.isEmpty()){
-			sqlSourceHelper.setCurrentIndex(Integer.toString((Integer.parseInt(sqlSourceHelper.getCurrentIndex())
-					+ rowsList.size())));
+			int size = rowsList.size();
+			// 没有自定义增量更新考虑的列表
+			if(sqlSourceHelper.getIncrementColumnIndex() < 0){
+				sqlSourceHelper.setCurrentIndex(Integer.toString((Integer.parseInt(sqlSourceHelper.getCurrentIndex())
+						+ size)));
+			}else{
+				// 约束第一列的值作为增量更新的值
+				sqlSourceHelper.setCurrentIndex(rowsList.get(size-1).get(sqlSourceHelper.getIncrementColumnIndex()).toString());
+			}
 		}
 		
 		return rowsList;

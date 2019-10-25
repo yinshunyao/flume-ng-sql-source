@@ -50,6 +50,8 @@ public class SQLSourceHelper {
     columnsToSelect, customQuery, query, sourceName, delimiterEntry, connectionUserName, connectionPassword,
 		defaultCharsetResultSet;
   private Boolean encloseByQuotes;
+  // 增量更新的字段
+  private int incrementColumnIndex;
 
   private Context context;
 
@@ -97,6 +99,7 @@ public class SQLSourceHelper {
     connectionUserName = context.getString("hibernate.connection.user");
     connectionPassword = context.getString("hibernate.connection.password");
     readOnlySession = context.getBoolean("read.only", false);
+    incrementColumnIndex = context.getInteger("increment.column.index", -1);
 
     this.sourceName = sourceName;
     startFrom = context.getString("start.from", DEFAULT_INCREMENTAL_VALUE);
@@ -359,6 +362,12 @@ public class SQLSourceHelper {
 
   boolean isCustomQuerySet() {
     return (customQuery != null);
+  }
+
+
+  // 返回自定义增量字段的值
+  int getIncrementColumnIndex() {
+    return incrementColumnIndex;
   }
 
   Context getContext() {
